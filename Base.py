@@ -159,7 +159,7 @@ class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = random.choice([250, 80, 50])
+        self.rect.y = random.choice([270, 50])
         self.index = 0
     
     def draw(self, SCREEN):
@@ -278,18 +278,32 @@ def eval_genomes(genomes, config) :
             obstacle.update()
             for i, dinosaur in enumerate(dinosaurs):
                 if dinosaur.dino_rect.colliderect(obstacle.rect):
-                    ge[i].fitness -= 1
+                    ge[i].fitness -= 5
                     remove(i)
+                else:
+                    ge[i].fitness += 1
             for i, dinosaur in enumerate(dinosaurs):
 
                 output = nets[i].activate((dinosaur.dino_rect.y,
                                         distance((dinosaur.dino_rect.x, dinosaur.dino_rect.y),
                                         obstacle.rect.midtop)))
 
-                if output[0] > 0.5 and dinosaur.dino_rect.y == dinosaur.Y_POS:
+                if output[0] > 0.5 and dinosaur.dino_rect.y == dinosaur.Y_POS and not dinosaur.dino_duck:
                     dinosaur.dino_jump = True
                     dinosaur.dino_duck = False
                     dinosaur.dino_run = False
+                
+                elif obstacle.rect.y < 300 and output[1] > 0.5 and not dinosaur.dino_jump:
+                    dinosaur.dino_jump = False
+                    dinosaur.dino_duck = True
+                    dinosaur.dino_run = False
+                    if len(obstacles)==0:
+                        dinosaur.dino_jump = False
+                        dinosaur.dino_duck = False
+                        dinosaur.dino_run = True
+
+
+            
 
 
         background()
@@ -317,7 +331,7 @@ def run(config_path):
 
 
     pop = neat.Population(config)
-    pop.run(eval_genomes, 50)
+    pop.run(eval_genomes, 500)
 
 
 if __name__ == '__main__':
