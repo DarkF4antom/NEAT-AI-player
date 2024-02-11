@@ -218,9 +218,10 @@ def eval_genomes(genomes, config) :
         points += 1
         if points % 100 == 0 :
             gspeed += 1
-            game_speed += 1
-            #if not game_speed > 45:
-            #   game_speed += 1
+            #game_speed += 1
+            if not game_speed > 45:
+
+                game_speed += 1
        
         text = font.render("points: "+ str(points), True , (0, 0, 0))
         textRect =  text.get_rect()
@@ -241,7 +242,7 @@ def eval_genomes(genomes, config) :
 
 
     def statistics():
-        global dinosaurs, game_speed, ge, gspeed
+        global dinosaurs, game_speed, ge    #, gspeed
         text_1 = font.render(f'Dinosaurs left:  {str(len(dinosaurs))}', True, (0,0,0))
         text_2 = font.render(f'Gen: {pop.generation+1} ', True, (0, 0, 0))
         text_3 = font.render(f'Game Speed: {str(gspeed)}', True, (0, 0, 0))
@@ -337,7 +338,7 @@ def run(config_path):
 
 
     pop = neat.Population(config)
-    pop.run(eval_genomes, 500)
+    pop.run(eval_genomes, 15)
 
 
 if __name__ == '__main__':
